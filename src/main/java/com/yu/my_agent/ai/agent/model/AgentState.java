@@ -13,7 +13,12 @@ public enum AgentState {
     /**  
      * 运行中状态  
      */  
-    RUNNING,  
+    RUNNING,
+
+    /**
+     * 等待用户输入状态
+     */
+    WAITING_FOR_CONFIRMATION,
   
     /**  
      * 已完成状态  

@@ -177,6 +177,51 @@ public abstract class BaseAgent {
         return sseEmitter;
     }
 
+    /**
+     * 交互式运行代理（控制台输入）
+     *
+     * @param userPrompt 用户初始提示词
+     * @return 执行结果
+     */
+    public String runInteractiveConsole(String userPrompt) {
+        if (this.state != com.yu.my_agent.ai.agent.model.AgentState.IDLE) {
+            throw new RuntimeException("Cannot run agent from state: " + this.state);
+        }
+        if (org.jsoup.internal.StringUtil.isBlank(userPrompt)) {
+            throw new RuntimeException("Cannot run agent with empty user prompt");
+        }
+
+        state = com.yu.my_agent.ai.agent.model.AgentState.RUNNING;
+        messageList.add(new org.springframework.ai.chat.messages.UserMessage(userPrompt));
+        List<String> results = new ArrayList<>();
+
+        try {
+            for (int i = 0; i < maxSteps && state != com.yu.my_agent.ai.agent.model.AgentState.FINISHED; i++) {
+                int stepNumber = i + 1;
+                currentStep = stepNumber;
+                log.info("Executing step " + stepNumber + "/" + maxSteps);
+
+                String stepResult = step();
+                String result = "Step " + stepNumber + ": " + stepResult;
+                results.add(result);
+
+                System.out.println("Step " + stepNumber + " completed: " + stepResult);
+            }
+
+            if (currentStep >= maxSteps) {
+                state = com.yu.my_agent.ai.agent.model.AgentState.FINISHED;
+                results.add("Terminated: Reached max steps (" + maxSteps + ")");
+            }
+            return String.join("\n", results);
+        } catch (Exception e) {
+            state = com.yu.my_agent.ai.agent.model.AgentState.ERROR;
+            log.error("Error executing agent", e);
+            return "执行错误: " + e.getMessage();
+        } finally {
+            this.cleanup();
+        }
+    }
+
     /**  
      * 执行单个步骤  
      *  

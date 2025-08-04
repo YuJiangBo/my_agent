@@ -2,9 +2,7 @@ package com.yu.my_agent.ai.agent;
 
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
-
 import com.yu.my_agent.ai.agent.model.AgentState;
-import jakarta.annotation.Resource;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -18,40 +16,37 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.tool.ToolCallingManager;
 import org.springframework.ai.model.tool.ToolExecutionResult;
 import org.springframework.ai.tool.ToolCallback;
-import org.springframework.ai.tool.ToolCallbackProvider;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
-/**
- * 处理工具调用的基础代理类，具体实现了 think 和 act 方法，可以用作创建实例的父类  
- */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
 public class ToolCallAgent extends ReActAgent {
 
-    // 可用的工具  
+    // 可用的工具
     private final ToolCallback[] availableTools;
 
-    // 保存了工具调用信息的响应  
+    // 保存了工具调用信息的响应
     private ChatResponse toolCallChatResponse;
 
-    // 工具调用管理者  
+    // 工具调用管理者
     private final ToolCallingManager toolCallingManager;
 
-    // 禁用内置的工具调用机制，自己维护上下文  
+    // 禁用内置的工具调用机制，自己维护上下文
     private final ChatOptions chatOptions;
 
-//    @Resource
-//    private ToolCallbackProvider toolCallbackProvider;
+    // 用于用户输入的Scanner
+    private transient Scanner scanner = new Scanner(System.in);
 
     public ToolCallAgent(ToolCallback[] availableTools) {
         super();
         this.availableTools = availableTools;
         this.toolCallingManager = ToolCallingManager.builder().build();
-        // 禁用 Spring AI 内置的工具调用机制，自己维护选项和消息上下文  
+        // 禁用 Spring AI 内置的工具调用机制，自己维护选项和消息上下文
         this.chatOptions = DashScopeChatOptions.builder()
                 .withProxyToolCalls(true)
                 .build();
@@ -84,21 +79,47 @@ public class ToolCallAgent extends ReActAgent {
             String result = assistantMessage.getText();
             List<AssistantMessage.ToolCall> toolCallList = assistantMessage.getToolCalls();
             log.info(getName() + "的思考: " + result);
-            log.info(getName() + "选择了 " + toolCallList.size() + " 个工具来使用");
-            String toolCallInfo = toolCallList.stream()
-                    .map(toolCall -> String.format("工具名称：%s，参数：%s",
-                            toolCall.name(),
-                            toolCall.arguments())
-                    )
-                    .collect(Collectors.joining("\n"));
-            log.info(toolCallInfo);
+
             if (toolCallList.isEmpty()) {
                 // 只有不调用工具时，才记录助手消息
                 getMessageList().add(assistantMessage);
                 return false;
             } else {
-                // 需要调用工具时，无需记录助手消息，因为调用工具时会自动记录
-                return true;
+                // 有工具调用时，询问用户是否执行
+                String toolCallInfo = toolCallList.stream()
+                        .map(toolCall -> String.format("工具名称：%s，参数：%s",
+                                toolCall.name(),
+                                toolCall.arguments())
+                        )
+                        .collect(Collectors.joining("\n"));
+
+                if(toolCallList.get(toolCallList.size() - 1).name().equals("doTerminate")) {
+                    return true;
+                }
+                log.info(getName() + "选择了 " + toolCallList.size() + " 个工具来使用");
+                log.info(toolCallInfo);
+
+                // 询问用户是否执行工具调用
+                System.out.println("\n=== 工具调用确认 ===");
+                System.out.println("模型建议调用以下工具:");
+                System.out.println(toolCallInfo);
+                System.out.print("是否执行这些工具调用？请输入'是'或'否': ");
+
+                // 等待用户输入
+                String userResponse = scanner.nextLine().trim();
+
+                boolean confirmed = "是".equalsIgnoreCase(userResponse) ||
+                        "yes".equalsIgnoreCase(userResponse) ||
+                        "y".equalsIgnoreCase(userResponse);
+
+                if (confirmed) {
+                    log.info("用户确认执行工具调用");
+                    return true; // 继续执行工具调用
+                } else {
+                    log.info("用户取消工具调用");
+                    getMessageList().add(new AssistantMessage("已取消工具调用，根据当前信息继续处理..."));
+                    return false; // 不执行工具调用
+                }
             }
         } catch (Exception e) {
             log.error(getName() + "的思考过程遇到了问题: " + e.getMessage());
@@ -139,7 +160,4 @@ public class ToolCallAgent extends ReActAgent {
         log.info(results);
         return results;
     }
-
-
-
 }
