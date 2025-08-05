@@ -1,0 +1,16 @@
+spring:
+  ai:
+    mcp:
+      server:
+        name: my_agent_mcp_server
+        version: 0.0.1
+        type: SYNC
+        # sse
+        stdio: false
+        sse:
+          timeout: 180000  # 3分钟超时
+          connection-timeout: 180000
+          keep-alive-interval: 30000  # 30秒发送一次心跳
+  mvc:
+    async:
+      request-timeout: 180000  # 3分钟超时

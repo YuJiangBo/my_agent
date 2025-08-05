@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: my_agent_mcp_server
+  profiles:
+#    active: sse or stdio
+    active: stdio
+server:
+  port: 8083

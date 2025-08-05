@@ -57,6 +57,17 @@ spring:
       chat:
         options:
           model: qwen-plus
+    #    MCP相关配置
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:mcp-servers.json
+#        sse:
+#          connections:
+#            server1:
+#              url: http://localhost:8083
+        timeout: 60000  # 设置为60秒
+        connection-timeout: 60000
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml

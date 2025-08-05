@@ -44,8 +44,8 @@ public class MyAgentApp {
     @Resource
     private ToolCallback[] allTools;
 
-//    @Resource
-//    private ToolCallbackProvider toolCallbackProvider;
+    @Resource
+    private ToolCallbackProvider toolCallbackProvider;
 
     public MyAgentApp(ChatModel dashScopeChatModel) {
         ChatMemory chatMemory = new InMemoryChatMemory();
@@ -164,7 +164,7 @@ public class MyAgentApp {
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
                 // 开启日志，便于观察效果
                 .advisors(new MyLoggerAdvisor())
-//                .tools(toolCallbackProvider)
+                .tools(toolCallbackProvider)
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();
@@ -186,7 +186,7 @@ public class MyAgentApp {
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
                 // 开启日志，便于观察效果
                 .advisors(new MyLoggerAdvisor())
-//                .tools(toolCallbackProvider)
+                .tools(toolCallbackProvider)
                 .tools(allTools)
                 .stream()
                 .content();

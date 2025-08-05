@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class YuManus extends ToolCallAgent {
   
-//    public YuManus(ToolCallback[] allTools, ChatModel dashscopeChatModel, ToolCallbackProvider toolCallbackProvider) {
-    public YuManus(ToolCallback[] allTools, ChatModel dashscopeChatModel) {
+    public YuManus(ToolCallback[] allTools, ChatModel dashscopeChatModel, ToolCallbackProvider toolCallbackProvider) {
         super(allTools);
         this.setName("yuManus");  
         String SYSTEM_PROMPT = """  
@@ -32,7 +31,7 @@ public class YuManus extends ToolCallAgent {
         // 初始化客户端
         ChatClient chatClient = ChatClient.builder(dashscopeChatModel)
                 .defaultAdvisors(new MyLoggerAdvisor())
-//                .defaultTools(toolCallbackProvider)
+                .defaultTools(toolCallbackProvider)
                 .build();
 
         this.setChatClient(chatClient);  
