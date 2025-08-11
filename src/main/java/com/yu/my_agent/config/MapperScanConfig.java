@@ -1,4 +1,3 @@
-// MapperConfig.java
 package com.yu.my_agent.config;
 
 import org.mybatis.spring.annotation.MapperScan;
@@ -11,11 +10,5 @@ public class MapperScanConfig {
     @MapperScan(basePackages = "com.yu.my_agent.mapper.mysql", 
                 sqlSessionFactoryRef = "mysqlSqlSessionFactory")
     static class MySqlMapperConfig {
-    }
-
-    @Configuration
-    @MapperScan(basePackages = "com.yu.my_agent.mapper.postgresql", 
-                sqlSessionFactoryRef = "postgresqlSqlSessionFactory")
-    static class PostgreSqlMapperConfig {
     }
 }

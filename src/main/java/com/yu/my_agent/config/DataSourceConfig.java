@@ -17,9 +17,4 @@ public class DataSourceConfig {
         return new HikariDataSource();
     }
 
-    @Bean("postgresqlDataSource")
-    @ConfigurationProperties("spring.datasource.postgresql")
-    public HikariDataSource postgresqlDataSource() {
-        return new HikariDataSource();
-    }
 }

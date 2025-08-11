@@ -18,34 +18,34 @@ import java.util.List;
 @RequestMapping("/api/vector")
 public class VectorController {
     
-    @Autowired
-    private VectorDocumentService vectorDocumentService;
-    
-    @PostMapping("/documents")
-    public ResponseEntity<DocumentVector> saveDocument(
-            @RequestBody SaveDocumentRequest request) {
-        DocumentVector doc = vectorDocumentService.saveDocument(
-            request.getContent(), 
-            request.getVector(), 
-            request.getMetadata()
-        );
-        return ResponseEntity.ok(doc);
-    }
-    
-    @PostMapping("/search")
-    public ResponseEntity<List<DocumentVector>> searchDocuments(
-            @RequestBody SearchRequest request) {
-        List<DocumentVector> results = vectorDocumentService.searchSimilarDocuments(
-            request.getQueryVector(), 
-            request.getLimit()
-        );
-        return ResponseEntity.ok(results);
-    }
-    
-    @GetMapping("/search-ai")
-    public ResponseEntity<List<Document>> searchDocumentsWithAI(
-            @RequestParam String query) {
-        List<Document> results = vectorDocumentService.searchSimilarDocumentsWithAI(query);
-        return ResponseEntity.ok(results);
-    }
+//    @Autowired
+//    private VectorDocumentService vectorDocumentService;
+//
+//    @PostMapping("/documents")
+//    public ResponseEntity<DocumentVector> saveDocument(
+//            @RequestBody SaveDocumentRequest request) {
+//        DocumentVector doc = vectorDocumentService.saveDocument(
+//            request.getContent(),
+//            request.getVector(),
+//            request.getMetadata()
+//        );
+//        return ResponseEntity.ok(doc);
+//    }
+//
+//    @PostMapping("/search")
+//    public ResponseEntity<List<DocumentVector>> searchDocuments(
+//            @RequestBody SearchRequest request) {
+//        List<DocumentVector> results = vectorDocumentService.searchSimilarDocuments(
+//            request.getQueryVector(),
+//            request.getLimit()
+//        );
+//        return ResponseEntity.ok(results);
+//    }
+//
+//    @GetMapping("/search-ai")
+//    public ResponseEntity<List<Document>> searchDocumentsWithAI(
+//            @RequestParam String query) {
+//        List<Document> results = vectorDocumentService.searchSimilarDocumentsWithAI(query);
+//        return ResponseEntity.ok(results);
+//    }
 }

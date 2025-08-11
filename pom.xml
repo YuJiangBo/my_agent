@@ -111,26 +111,6 @@
             <version>1.0.0-M6</version>
         </dependency>
 
-        <!--    PG vector  注入EmbeddingModel时会跟 Dashscope的冲突，所以选择下面三个依赖   -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.ai</groupId>-->
-<!--            <artifactId>spring-ai-starter-vector-store-pgvector</artifactId>-->
-<!--            <version>1.0.0-M7</version>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-pgvector-store</artifactId>
-            <version>1.0.0-M6</version>
-        </dependency>
 
         <!--   网页抓取工具     -->
         <dependency>

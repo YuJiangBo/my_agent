@@ -39,9 +39,6 @@ public class MyAgentApp {
     private VectorStore loveAppVectorStore;
 
     @Resource
-    private Advisor loveAppRagCloudAdvisor;
-
-    @Resource
     private ToolCallback[] allTools;
 
     @Resource
@@ -118,7 +115,7 @@ public class MyAgentApp {
                 // 开启日志，便于观察效果
                 .advisors(new MyLoggerAdvisor())
                 // 应用增强检索服务（云知识库服务）
-                .advisors(loveAppRagCloudAdvisor)
+//                .advisors(loveAppRagCloudAdvisor)
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();
